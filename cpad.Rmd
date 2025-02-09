@@ -149,6 +149,8 @@ country_count <- single_country_data %>%
 top_10_countries <- head(country_count, 10)
 ```
 
+Havia algo em 3 lugar, mas ele não havia nome, era um campo em branco, portanto, retirado.
+
 ```{r}
 fig <- plot_ly(
   data = top_10_countries, 
@@ -190,6 +192,8 @@ head(country_count)
 top_10_countries <- head(country_count, 10)
 ```
 
+Havia algo em 3 lugar, mas ele não havia nome, era um campo em branco, portanto, retirado.
+
 ```{r}
 table <- plot_ly(
   type = "table",
@@ -215,7 +219,9 @@ table
 ```{r}
 library(dplyr)
 library(plotly)
+```
 
+```{r}
 netflix_data <- read.csv("netflix_titles.csv")
 
 netflix_data <- netflix_data %>%
@@ -227,16 +233,50 @@ content_by_decade <- netflix_data %>%
   group_by(decade, type) %>%
   summarise(count = n()) %>%
   arrange(decade)
+```
 
+Infelizmente não consegui descobrir o por que das linhas não aparecerem por mais que o mode 'lines+markers' esteja setado...
+
+```{r}
 fig <- plot_ly(content_by_decade, 
                x = ~decade, 
                y = ~count, 
                color = ~type, 
                colors = c("blue", "yellow"), 
                type = 'scatter', 
-               mode = 'lines+markers')
+               mode = 'lines+markers',  # Adiciona tanto as linhas quanto os pontos
+               line = list(shape = "linear", width = 3)) %>%  # Forma das linhas e largura
+  layout(xaxis = list(title = "Década"),
+         yaxis = list(title = "Quantidade de Conteúdo"))
 
 fig
+```
 
+
+### Questão 10
+```{r}
+library(dplyr)
+library(plotly)
+```
+
+```{r}
+netflix_data <- read.csv("netflix_titles.csv")
+
+netflix_data_filtered <- netflix_data %>%
+  filter(release_year >= 2000 & release_year <= 2010) %>%
+  mutate(first_genre = sapply(strsplit(as.character(listed_in), ","), `[`, 1)) %>%
+  filter(first_genre %in% c("Dramas", "Action & Adventure", "Comedies"))
+
+netflix_data_count <- netflix_data_filtered %>%
+  group_by(release_year, first_genre) %>%
+  summarise(count = n(), .groups = 'drop')
+```
+
+```{r}
+plot_ly(netflix_data_count, x = ~release_year, y = ~count, color = ~first_genre, type = 'bar', barmode = 'group') %>%
+  layout(title = "Quantidade de Filmes Lançados (2000-2010) por Gênero",
+         xaxis = list(title = "Ano de Lançamento"),
+         yaxis = list(title = "Quantidade de Filmes"),
+         barmode = 'group')
 ```
 
