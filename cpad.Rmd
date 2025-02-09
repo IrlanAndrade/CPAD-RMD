@@ -123,11 +123,6 @@ boxplot(count ~ spray, data = InsectSprays,
 
 
 
-### Questão 6
-```{r}
-```
-
-
 ### Questão 7
 ```{r}
 library(dplyr)
